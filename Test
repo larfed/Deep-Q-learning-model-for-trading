@@ -1,0 +1,62 @@
+# Initialize portfolio variables for simulation
+initial_balance_simulation = 1000000  # Initial balance for simulation
+balance_simulation = initial_balance_simulation
+shares_held_simulation = 0
+portfolio_returns_simulation = []
+strategy1_actions = []
+
+# Use testing data instead of actual_prices
+testing_prices = test_data.values
+testing_prices = np.array([inner_array[2:] for inner_array in testing_prices]).astype(np.float32)
+
+for i in range(len(testing_prices)):
+    current_price_simulation = testing_prices[i]
+
+    # Execute action from DQ-learning model: 0 = BUY, 1 = HOLD, 2 = SHORT
+    state_simulation = np.array([testing_prices[i]
+    ])
+    state_simulation = np.reshape(state_simulation, [1, state_size])
+    action_simulation = agent.act(state_simulation)
+
+    if action_simulation == 0:  # BUY
+        shares_bought_simulation = balance_simulation / current_price_simulation
+        balance_simulation -= shares_bought_simulation * current_price_simulation
+        shares_held_simulation += shares_bought_simulation
+    elif action_simulation == 2:  # SHORT
+        balance_simulation += shares_held_simulation * current_price_simulation
+        shares_held_simulation = 0
+    strategy1_actions.append(action_simulation)
+    # Calculate portfolio return at the current time step for simulation
+    portfolio_return_simulation = (
+        (balance_simulation + shares_held_simulation * current_price_simulation) / initial_balance_simulation - 1
+    )
+    portfolio_returns_simulation.append(portfolio_return_simulation)
+
+# Convert portfolio returns to a NumPy array for simulation
+portfolio_returns_simulation = np.array(portfolio_returns_simulation)
+
+
+
+
+## PLOTTING SIGNALs
+testing_prices = test_data['close']
+testing_prices
+# Plot buy and sell signals based on the learned strategy
+buy_signals = [i for i, action in enumerate(strategy1_actions) if action == 0]
+sell_signals = [i for i, action in enumerate(strategy1_actions) if action == 2]
+# Plot actual stock prices
+plt.figure(figsize=(10, 6))
+plt.plot(np.array(testing_prices), label=SELECTED_ISTRUMENTS[0], color='blue')
+
+# Plot buy and sell signals based on the learned strategy
+buy_signals = [i for i in buy_signals if i < len(testing_prices)]
+sell_signals = [i for i in sell_signals if i < len(testing_prices)]
+
+plt.scatter(buy_signals, [np.array(testing_prices.iloc[i]) for i in buy_signals], marker='^', color='green', label='Buy Signal')
+plt.scatter(sell_signals, [np.array(testing_prices.iloc[i]) for i in sell_signals], marker='v', color='red', label='Sell Signal')
+
+plt.title('Stock Prices and Trading Signals')
+plt.xlabel('Time Step')
+plt.ylabel('Stock Price')
+plt.legend()
+plt.show()
