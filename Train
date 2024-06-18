@@ -1,0 +1,64 @@
+
+
+# Store results for plotting
+all_states_train = []
+all_actions_train = []
+all_rewards_train = []
+
+all_states_test = []
+all_actions_test = []
+all_rewards_test = []
+
+state_index_train = 0
+state_index_test = 0
+
+for episode in range(num_episodes):
+    # Training
+    state_train = env_train.reset()
+    episode_states_train = []
+    episode_actions_train = []
+    episode_rewards_train = []
+
+    while True:
+        action_train = agent.act(state_train)
+        next_state_train, reward_train, done_train, _ = env_train.step(action_train)
+        agent.remember(state_train, action_train, reward_train, next_state_train, done_train)
+        episode_states_train.append(state_index_train)
+        episode_actions_train.append(action_train)
+        episode_rewards_train.append(reward_train)
+        state_train = next_state_train
+        state_index_train += 1
+
+        if done_train:
+            break
+
+    # Replay and train the agent
+    agent.replay(batch_size)
+
+    # Testing
+    state_test = env_test.reset()
+    episode_states_test = []
+    episode_actions_test = []
+    episode_rewards_test = []
+
+    while True:
+        action_test = agent.act(state_test)
+        next_state_test, reward_test, done_test, _ = env_test.step(action_test)
+        episode_states_test.append(state_index_test)
+        episode_actions_test.append(action_test)
+        episode_rewards_test.append(reward_test)
+        state_test = next_state_test
+        state_index_test += 1
+
+        if done_test:
+            break
+
+    # Store results for plotting
+    all_states_train.extend(episode_states_train)
+    all_actions_train.extend(episode_actions_train)
+    all_rewards_train.extend(episode_rewards_train)
+
+    all_states_test.extend(episode_states_test)
+    all_actions_test.extend(episode_actions_test)
+    all_rewards_test.extend(episode_rewards_test)
+     
