@@ -1,0 +1,27 @@
+##########################
+###config.py: ASSETS
+##########################
+
+CONFIG_FILE = "train_data.csv"
+CONFIG_INSTRUMENTS_placeholder = ['ASST1']
+#CONFIG_INSTRUMENTS = ['AAPL', 'GOOGL', 'MSFT']  #EXAMPLE
+CONFIG_INSTRUMENTS = CONFIG_TARGET_INSTRUMENTS
+CONFIG_COLS = ['high', 'low', 'open', 'close', 'volume', 'quoteVolume', 'weightedAverage', 'vix']
+CONFIG_SCOLS = ['vh', 'vl', 'vc', 'open_s', 'volume_s', 'quoteVolume_s', 'weightedAverage_s', 'vh_roll_7', \
+                'vh_roll_14', 'vh_roll_30', 'vl_roll_7', 'vl_roll_14', 'vl_roll_30', 'vc_roll_7', 'vc_roll_14', 'vc_roll_30', \
+                'open_s_roll_7', 'open_s_roll_14', 'open_s_roll_30', 'volume_s_roll_7', 'volume_s_roll_14', 'volume_s_roll_30', \
+                'quoteVolume_s_roll_7', 'quoteVolume_s_roll_14', 'quoteVolume_s_roll_30', 'weightedAverage_s_roll_7', \
+                'weightedAverage_s_roll_14', 'weightedAverage_s_roll_30', 'vix_roll_7', \
+                'vix_roll_14', 'vix_roll_30']
+CONFIG_OBS_COLS = ['ASST1_vh', 'ASST1_vl', 'ASST1_vc','ASST1_open_s', 'ASST1_volume_s', 'ASST1_quoteVolume_s', 'ASST1_weightedAverage_s','ASST1_vh_roll_7', 'ASST1_vh_roll_14', 'ASST1_vh_roll_30', 'ASST1_vl_roll_7', \
+                    'ASST1_vl_roll_14', 'ASST1_vl_roll_30','ASST1_vc_roll_7', 'ASST1_vc_roll_14', 'ASST1_vc_roll_30', 'ASST1_open_s_roll_7', 'ASST1_open_s_roll_14', 'ASST1_open_s_roll_30', \
+                       'ASST1_volume_s_roll_7', 'ASST1_volume_s_roll_14', 'ASST1_volume_s_roll_30', 'ASST1_quoteVolume_s_roll_7', 'ASST1_quoteVolume_s_roll_14', \
+                           'ASST1_quoteVolume_s_roll_30', 'ASST1_weightedAverage_s_roll_7', 'ASST1_weightedAverage_s_roll_14', 'ASST1_weightedAverage_s_roll_30', 'ASST1_vix_roll_7', 'ASST1_vix_roll_14', 'ASST1_vix_roll_30']
+# Perform the replacement of placeholders.
+CONFIG_OBS_COLS = [col.replace(placeholder, instrument) for col, placeholder, instrument in zip(CONFIG_OBS_COLS, CONFIG_INSTRUMENTS_placeholder * len(CONFIG_OBS_COLS), CONFIG_INSTRUMENTS * len(CONFIG_OBS_COLS))]
+ALL_COL = CONFIG_COLS + CONFIG_SCOLS
+#####################################################
+# Checkining contets of CONFIG_OBS_COLS
+inline_string = ', '.join(CONFIG_OBS_COLS)
+# Printing the result
+print(inline_string)
